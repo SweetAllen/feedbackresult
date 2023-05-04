@@ -103,7 +103,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { db } from './firebase';
-import { getDocs, doc, collection,query } from 'firebase/firestore';
+import { getDocs, doc, collection,query, onSnapshot } from 'firebase/firestore';
 function createData(name, calories, fat, carbs, protein, market) {
   return { name, calories, fat, carbs, protein, market };
 }
@@ -114,45 +114,34 @@ const rows = [
 //   createData('Cupcake', 305, 3.7, 67, 4.3,'bb'),
 //   createData('Gingerbread', 356, 16.0, 49, 3.9,'bb'),
 ];
-var arr=[]
+
 
 export default function Home() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([])
   const [branch, setBranch] = useState('');
   const [serviceRating, setServiceRating] = useState(0);
   const [servicemessage, setServicemessage] = useState([]);
   const [counterRating, setCounterRating] = useState(0);
   const [countermessage, setCountermessage] = useState([]);
   const [userSurvey, setUserSurvey] = useState([]);
+
   useEffect(() => {
+    const colRef = query(collection(db, "rating"))
+    const   getData = async () => {
+      const data = await onSnapshot(colRef,(querySnapshot)=>{
+        let array = [];
+        querySnapshot.forEach(doc=>{
+          array.push({...doc.data()})
+        })
+        setData(array)
+      });
+    }
     getData();
   }, []);
-
-
-const   getData = async () => {
-const querySnapshot = await getDocs(collection(db, "rating"));
-  querySnapshot.forEach((doc) => {
-    arr = (doc.data()); 
-    console.log(arr)
-    setBranch(arr.loginbranch)
-    setServiceRating(arr.reratingcount)
-    setServicemessage(arr.reratingdata)
-    setCounterRating(arr.counterratingcount)
-    setCountermessage(arr.counterratingdata)
-    setUserSurvey(arr.surveydata)
-    
-  });
-
-  console.log('branch', branch);
-  console.log('service rating', serviceRating);
-  console.log('service message', servicemessage);
-  console.log('counter rating', counterRating);
-  console.log('counter message', countermessage);
-  console.log('user survey', userSurvey);
+console.log(data);
 
 
 
-    }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -169,25 +158,28 @@ const querySnapshot = await getDocs(collection(db, "rating"));
         </TableHead>
         <TableBody>
           
-            <TableRow
-              
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {branch}
-              </TableCell>
-              <TableCell align="right">{serviceRating}</TableCell>
-              <TableCell align="right">
-                {servicemessage.map(m=> <span>{m.name}</span>)}
-              </TableCell>
-              <TableCell align="right">{counterRating}</TableCell>
-              <TableCell align="right">{countermessage.map(m=> <span>{m.name}</span>)}</TableCell>
-              <TableCell align="right">{userSurvey}</TableCell>
+            {
+              data.map(d=>{
+                console.log(d)
+                return (
+                  <TableRow
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">{d.loginbranch}</TableCell>
+                    <TableCell align="right">{d.reratingcount}</TableCell>
+                    <TableCell align="right">{d.reratingdata.map(d=>d.name)}</TableCell>
+                    <TableCell align="right">{d.counterratingcount}</TableCell>
+                    <TableCell align="right">{d.counterratingdata.map(d=>d.name)}</TableCell>
+                    <TableCell align="right">{d.surveydata}</TableCell>
 
-            </TableRow>
+                  </TableRow>
+                )
+              })
+            }
           
         </TableBody>
       </Table>
     </TableContainer>
+   
   );
 }
