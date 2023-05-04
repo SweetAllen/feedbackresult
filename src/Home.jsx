@@ -117,24 +117,40 @@ const rows = [
 var arr=[]
 
 export default function Home() {
-
-      useEffect(() => {
-  getData();
-}, []);
+  const [data, setData] = useState([]);
+  const [branch, setBranch] = useState('');
+  const [serviceRating, setServiceRating] = useState(0);
+  const [servicemessage, setServicemessage] = useState([]);
+  const [counterRating, setCounterRating] = useState(0);
+  const [countermessage, setCountermessage] = useState([]);
+  const [userSurvey, setUserSurvey] = useState([]);
+  useEffect(() => {
+    getData();
+  }, []);
 
 
 const   getData = async () => {
-
 const querySnapshot = await getDocs(collection(db, "rating"));
-querySnapshot.forEach((doc) => {
-  console.log(doc.id, " => ", doc.data());
-  // rows.push(    createData( doc.data()))
-  arr.push( doc.data())
-});
-// for(let i=0;i<arr.length;i++){
-  console.log(JSON.stringify(arr))
+  querySnapshot.forEach((doc) => {
+    arr = (doc.data()); 
+    console.log(arr)
+    setBranch(arr.loginbranch)
+    setServiceRating(arr.reratingcount)
+    setServicemessage(arr.reratingdata)
+    setCounterRating(arr.counterratingcount)
+    setCountermessage(arr.counterratingdata)
+    setUserSurvey(arr.surveydata)
+    
+  });
 
-// }
+  console.log('branch', branch);
+  console.log('service rating', serviceRating);
+  console.log('service message', servicemessage);
+  console.log('counter rating', counterRating);
+  console.log('counter message', countermessage);
+  console.log('user survey', userSurvey);
+
+
 
     }
   return (
@@ -152,22 +168,24 @@ querySnapshot.forEach((doc) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          
             <TableRow
-              key={row.name}
+              
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+                {branch}
               </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-              <TableCell align="right">{row.market}</TableCell>
+              <TableCell align="right">{serviceRating}</TableCell>
+              <TableCell align="right">
+                {servicemessage.map(m=> <span>{m.name}</span>)}
+              </TableCell>
+              <TableCell align="right">{counterRating}</TableCell>
+              <TableCell align="right">{countermessage.map(m=> <span>{m.name}</span>)}</TableCell>
+              <TableCell align="right">{userSurvey}</TableCell>
 
             </TableRow>
-          ))}
+          
         </TableBody>
       </Table>
     </TableContainer>
