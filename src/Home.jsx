@@ -147,12 +147,37 @@ console.log(data);
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Branch</TableCell>
-            <TableCell align="right">Service Rating</TableCell>
-            <TableCell align="right">Message</TableCell>
-            <TableCell align="right">Counter Rating</TableCell>
-            <TableCell align="right">Message</TableCell>
-            <TableCell align="right">User Survey</TableCell>
+            <TableCell align="center">
+              <h3>
+              Branch
+              </h3>
+            </TableCell>
+            <TableCell align="center">
+            <h3>
+
+              Service Rating
+              </h3>
+              </TableCell>
+            <TableCell align="center">
+              <h3>
+              Message
+              </h3>
+            </TableCell>
+            <TableCell align="center">
+              <h3>
+              Counter Rating
+              </h3>
+            </TableCell>
+            <TableCell align="center">
+              <h3>
+              Message
+              </h3>
+            </TableCell>
+            <TableCell align="center">
+              <h3>
+              User Survey
+              </h3>
+            </TableCell>
 
           </TableRow>
         </TableHead>
@@ -165,12 +190,46 @@ console.log(data);
                   <TableRow
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
-                    <TableCell component="th" scope="row">{d.loginbranch}</TableCell>
-                    <TableCell align="right">{d.reratingcount}</TableCell>
-                    <TableCell align="right">{d.reratingdata.map(d=>d.name)}</TableCell>
-                    <TableCell align="right">{d.counterratingcount}</TableCell>
-                    <TableCell align="right">{d.counterratingdata.map(d=>d.name)}</TableCell>
-                    <TableCell align="right">{d.surveydata}</TableCell>
+                    <TableCell component="th" scope="row" align="center">{d.loginbranch.replace('@gmail.com', '').toUpperCase()}</TableCell>
+                    <TableCell align="center">{d.reratingcount}</TableCell>
+                    <TableCell align="center" >
+                      {/* {d.reratingdata.map(d=>d.name)} */}
+                        {
+                          d.reratingdata.map((d)=>(
+                              <div>
+                               {d.name}
+                               </div>
+                          )
+                               
+                          )
+                      
+                        }
+                    </TableCell>
+                    <TableCell align="center">{d.counterratingcount}</TableCell>
+                    <TableCell align="center">
+                    {
+                          d.counterratingdata.map((d)=>(
+                              <div>
+                               {d.name}
+                               </div>
+                          )
+                               
+                          )
+                      
+                        }
+                      {/* {d.counterratingdata.map(d=>d.name)} */}
+                    
+                    </TableCell>
+                    <TableCell align="center">
+                         <div>
+                         {d.cusph}
+
+                         </div>
+                         <div>
+                         {d.surveydata}
+
+                          </div>                      
+                      </TableCell>
 
                   </TableRow>
                 )
